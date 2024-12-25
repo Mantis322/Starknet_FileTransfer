@@ -19,10 +19,9 @@ export default function P2PFileShare() {
   const downloadBufferRef = useRef({});
 
   useEffect(() => {
-    fetch('/api/socket').finally(() => {
-      const socket = io({
-        path: '/api/socketio'
-      });
+  const socket = io("https://starknet-file-transfer.vercel.app/api/socketio", {
+    path: '/api/socketio'
+  });
 
       socket.on('connect', () => {
         console.log('Connected with ID:', socket.id);
