@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+/* Uzay arkaplanı */
+.space-background {
+  background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+@keyframes move {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2000px);
+  }
+}
+
+/* Farklı boyut ve hızlarda yıldız katmanları */
+.stars {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  box-shadow: random-stars(700, 100vw, 100vh);
+  animation: move 150s linear infinite;
+}
+
+.stars2 {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  box-shadow: random-stars(500, 100vw, 100vh);
+  animation: move 200s linear infinite;
+}
+
+.stars3 {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  box-shadow: random-stars(300, 100vw, 100vh);
+  animation: move 250s linear infinite;
+}
+
+/* Rastgele yıldız konumları oluşturma */
+@function random-stars($count, $width, $height) {
+  $value: '';
+  @for $i from 0 through $count {
+    $x: random($width);
+    $y: random($height);
+    $value: $value + '#{$x}px #{$y}px #FFF,';
+  }
+  @return unquote(str-slice($value, 1, -1));
+}
+
+/* Daha basit bir versiyonu şu şekilde yapabiliriz */
+.stars {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  box-shadow: 
+    1744px 1051px #fff,
+    582px 714px #fff,
+    399px 1168px #fff,
+    1126px 472px #fff,
+    1094px 312px #fff,
+    1663px 562px #fff,
+    1245px 162px #fff,
+    277px 354px #fff,
+    1635px 372px #fff,
+    1459px 149px #fff,
+    1327px 32px #fff,
+    891px 357px #fff,
+    721px 435px #fff,
+    1195px 78px #fff,
+    1290px 152px #fff,
+    1237px 497px #fff,
+    1618px 116px #fff,
+    126px 133px #fff,
+    1252px 172px #fff,
+    1552px 502px #fff,
+    1737px 442px #fff,
+    1495px 518px #fff,
+    1819px 448px #fff,
+    1645px 469px #fff,
+    1397px 163px #fff,
+    1156px 472px #fff,
+    1004px 312px #fff,
+    1623px 526px #fff,
+    1205px 162px #fff,
+    227px 354px #fff,
+    1695px 372px #fff,
+    1489px 149px #fff,
+    1387px 32px #fff,
+    621px 357px #fff;
+  animation: move 100s linear infinite;
+}
+
+.stars2 {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  box-shadow: 
+    1344px 652px #fff,
+    878px 456px #fff,
+    1754px 532px #fff,
+    1405px 848px #fff,
+    1779px 147px #fff,
+    1246px 231px #fff,
+    1673px 593px #fff,
+    1337px 141px #fff,
+    1778px 260px #fff,
+    1458px 149px #fff,
+    1342px 68px #fff,
+    1685px 357px #fff,
+    1782px 435px #fff,
+    1285px 78px #fff,
+    1299px 152px #fff,
+    1247px 497px #fff;
+  animation: move 150s linear infinite;
+}
+
+.stars3 {
+  position: fixed;
+  width: 3px;
+  height: 3px;
+  background: transparent;
+  box-shadow: 
+    1819px 148px #fff,
+    1645px 469px #fff,
+    1397px 163px #fff,
+    1156px 472px #fff,
+    1004px 312px #fff,
+    1623px 526px #fff,
+    1205px 162px #fff,
+    227px 354px #fff,
+    1695px 372px #fff,
+    1489px 149px #fff,
+    1387px 32px #fff,
+    621px 357px #fff;
+  animation: move 200s linear infinite;
+}
