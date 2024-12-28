@@ -32,32 +32,32 @@ export default function Receive() {
   const contractAddress = '0x06462c81a901843c8f6ac3245e390abb3edf2f5b49be0446b13cd6ebb0a25fdb'
   const lendContract = new Contract(permissionManagerABI.abi, contractAddress, address);
 
-  useEffect(() => {
-    fetch('/api/socket').finally(() => {
-      const socket = io({
-        path: '/api/socketio'
-      });
+useEffect(() => {
+  
+  const socket = io("https://starknet-file-transfer.vercel.app/api/socketio", {
+    path: '/api/socketio' 
+  });
 
-      socket.on('connect', () => {
-        console.log('Socket connected:', socket.id);
-        setSocketId(socket.id);
-      });
+  socket.on('connect', () => {
+    console.log('Connected with ID:', socket.id);
+    setSocketId(socket.id);
+  });
 
-      socketRef.current = socket;
+  socketRef.current = socket;
 
-      const rtcConnectionHandler = {
-        onDataChannel: handleDataChannel,
-        onRTCPeerConnection: handleRTCPeerConnection
-      };
+  const rtcConnectionHandler = {
+    onDataChannel: handleDataChannel,
+    onRTCPeerConnection: handleRTCPeerConnection
+  };
 
-      rtcConnectionManagerRef.current = createRTCConnectionManager(
-        socket,
-        rtcConnectionHandler
-      );
-    });
+  rtcConnectionManagerRef.current = createRTCConnectionManager(
+    socket,
+    rtcConnectionHandler
+  );
 
-    return () => socketRef.current?.disconnect();
-  }, []);
+  return () => socketRef.current?.disconnect();
+}, []);
+
 
   useEffect(() => {
     if (socketId && (secretText || (isConnected && address))) {

@@ -19,31 +19,30 @@ export default function P2PFileShare() {
   const downloadBufferRef = useRef({});
 
   useEffect(() => {
-    fetch('/api/socket').finally(() => {
-      const socket = io({
-        path: '/api/socketio'
-      });
+  
+  const socket = io("https://starknet-file-transfer.vercel.app/api/socketio", {
+    path: '/api/socketio' 
+  });
 
-      socket.on('connect', () => {
-        console.log('Connected with ID:', socket.id);
-        setSocketId(socket.id);
-      });
+  socket.on('connect', () => {
+    console.log('Connected with ID:', socket.id);
+    setSocketId(socket.id);
+  });
 
-      socketRef.current = socket;
+  socketRef.current = socket;
 
-      const rtcConnectionHandler = {
-        onDataChannel: handleDataChannel,
-        onRTCPeerConnection: handleRTCPeerConnection
-      };
+  const rtcConnectionHandler = {
+    onDataChannel: handleDataChannel,
+    onRTCPeerConnection: handleRTCPeerConnection
+  };
 
-      rtcConnectionManagerRef.current = createRTCConnectionManager(
-        socket,
-        rtcConnectionHandler
-      );
-    });
+  rtcConnectionManagerRef.current = createRTCConnectionManager(
+    socket,
+    rtcConnectionHandler
+  );
 
-    return () => socketRef.current?.disconnect();
-  }, []);
+  return () => socketRef.current?.disconnect();
+}, []);
 
   const handleDataChannel = (socketId, newDataChannel) => {
     setConnectedSocketId(socketId);
