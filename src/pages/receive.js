@@ -5,6 +5,9 @@ import { createFileHash } from '../lib/hash';
 import { useAccount, useConnect, useDisconnect } from "@starknet-react/core";
 import { useStarknetkitConnectModal } from "starknetkit";
 import styles from './styles.module.css';
+import { WalletAccount, Contract } from 'starknet';
+import PermissionManager from './PermissionManager';
+const permissionManagerABI = require('./PermissionManagerABI.json');
 
 export default function Receive() {
   const [socketId, setSocketId] = useState('');
@@ -13,15 +16,21 @@ export default function Receive() {
   const [currentFile, setCurrentFile] = useState(null);
   const [secretText, setSecretText] = useState('');
   const [hash, setHash] = useState('');
+  const [permissionModalVisible, setPermissionModalVisible] = useState(false);
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const { address, isConnected } = useAccount();
+  const [walletAccount, setWalletAccount] = useState(null);
 
   const socketRef = useRef(null);
   const dataChannelRef = useRef(null);
   const rtcPeerConnectionRef = useRef(null);
-  const rtcConnectionManagerRef = useRef(null); 
+  const rtcConnectionManagerRef = useRef(null);
   const downloadBufferRef = useRef({});
+  const walletRef = useRef(null);
+
+  const contractAddress = '0x06462c81a901843c8f6ac3245e390abb3edf2f5b49be0446b13cd6ebb0a25fdb'
+  const lendContract = new Contract(permissionManagerABI.abi, contractAddress, address);
 
   useEffect(() => {
     fetch('/api/socket').finally(() => {
@@ -51,21 +60,51 @@ export default function Receive() {
   }, []);
 
   useEffect(() => {
-    if (secretText && socketId) {
-      const newHash = createFileHash(socketId, secretText);
-      console.log('Generated Hash:', newHash, 'from:', {socketId, secretText}); // Debug için
+    if (socketId && (secretText || (isConnected && address))) {
+      const textToHash = isConnected ? address : secretText;
+      const newHash = createFileHash(socketId, textToHash);
+      console.log('Generated Hash:', newHash, 'from:', { socketId, text: textToHash });
       setHash(newHash);
     }
-  }, [secretText, socketId]);
+  }, [secretText, socketId, isConnected, address]);
+
+  useEffect(() => {
+    if (isConnected && !walletRef.current && connectors[0]) {
+      const account = new WalletAccount(
+        { nodeUrl: 'https://starknet-sepolia.public.blastapi.io/rpc/v0_7' },
+        connectors[0]
+      );
+      walletRef.current = account;
+      setWalletAccount(account);
+    }
+  }, [isConnected, connectors]);
 
   const connectWallet = async () => {
-    const { starknetkitConnectModal } = useStarknetkitConnectModal({
-      connectors: connectors
-    })
+    try {
+      const { starknetkitConnectModal } = useStarknetkitConnectModal({
+        connectors: connectors
+      });
 
-    const { connector } = await starknetkitConnectModal()
-    await connect({ connector })
-  }
+      const { connector } = await starknetkitConnectModal();
+      if (connector) {
+        await connect({ connector });
+      }
+    } catch (error) {
+      console.error("Cüzdan bağlantı hatası:", error);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await disconnect();
+      walletRef.current = null;
+      setWalletAccount(null);
+      setSecretText('');
+      setHash('');
+    } catch (error) {
+      console.error("Cüzdan bağlantısını kesme hatası:", error);
+    }
+  };
 
   const handleDataChannel = (socketId, newDataChannel) => {
     console.log('Data channel connected with:', socketId);
@@ -126,7 +165,6 @@ export default function Receive() {
 
   return (
     <div className="min-h-screen relative bg-black">
-      {/* ... uzay efekti */}
       <div className="absolute inset-0">
         <div className="stars" />
         <div className="stars2" />
@@ -134,74 +172,87 @@ export default function Receive() {
       </div>
 
       <div className={styles.description}>
-          <div className={styles.logoContainer}>
-            <img
-              src="https://starknetkit-website-f0ejy1m72-argentlabs.vercel.app/starknetKit-logo-white.svg"
-              alt="starknetkit logo"
-            />
-            <span>P2P File Transfer With Starknet</span>
-          </div>
-          <div className={styles.walletActions}>
-            {isConnected ? (
-              <>
-                <button className={styles.connectbtn}>
-                  {address.slice(0, 5)}...{address.slice(60, 66)}
-                </button>
-                <button onClick={disconnect} className={`${styles.connectbtn} ${styles.disconnectBtn}`}>
-                  Disconnect
-                </button>
-              </>
-            ) : (
-              <button onClick={connectWallet} className={styles.connectbtn}>
-                Connect
-              </button>
-            )}
-          </div>
+        <div className={styles.logoContainer}>
+          <img
+            src="https://starknetkit-website-f0ejy1m72-argentlabs.vercel.app/starknetKit-logo-white.svg"
+            alt="starknetkit logo"
+          />
+          <span>P2P File Transfer With Starknet</span>
         </div>
-      
+        <div className={styles.walletActions}>
+          {isConnected ? (
+            <>
+              <button className={styles.connectbtn}>
+                {address.slice(0, 5)}...{address.slice(60, 66)}
+              </button>
+              <button onClick={handleDisconnect} className={`${styles.connectbtn} ${styles.disconnectBtn}`}>
+                Disconnect
+              </button>
+            </>
+          ) : (
+            <button onClick={connectWallet} className={styles.connectbtn}>
+              Connect
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="relative z-10 max-w-md mx-auto pt-20 px-4">
         <div className="bg-black/40 backdrop-blur-sm p-8 rounded-2xl text-white">
           <div className="space-y-6">
-            {/* ID Bilgisi */}
+            {/* Permission Management Button */}
+            {isConnected && (
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setPermissionModalVisible(true)}
+                  className="w-full bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg text-white transition-colors"
+                >
+                  Manage Permission
+                </button>
+              </div>
+            )}
+
+            {/* ID Information */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Sizin ID</label>
+              <label className="block text-sm text-gray-400 mb-2">Your ID</label>
               <div className="bg-white/10 p-3 rounded font-mono">
-                {socketId || 'Bağlanıyor...'}
+                {socketId || 'Connecting...'}
               </div>
             </div>
 
-            {/* Güvenlik Kodu Oluşturma */}
+            {/* Security Code Generation */}
             <div>
               <label className="block text-sm text-gray-400 mb-2">
-                Güvenlik Metni
+                Wallet Adress
               </label>
               <input
                 type="text"
-                value={secretText}
-                onChange={(e) => setSecretText(e.target.value)}
+                value={isConnected ? address : secretText}
+                onChange={(e) => !isConnected && setSecretText(e.target.value)}
                 className="w-full bg-white/10 p-3 rounded text-white outline-none"
-                placeholder="Bir metin girin"
+                placeholder="Connect a wallet"
+                disabled={isConnected}
               />
             </div>
 
             {hash && (
               <div>
                 <label className="block text-sm text-gray-400 mb-2">
-                  Güvenlik Kodu
+                  Security Code
                 </label>
                 <div className="bg-white/10 p-3 rounded font-mono text-green-400">
                   {hash}
                 </div>
                 <p className="mt-2 text-sm text-gray-400">
-                  Bu kodu dosya gönderecek kişiyle paylaşın
+                  Share this code with the file sender
                 </p>
               </div>
             )}
 
-            {/* Alınan Dosyalar */}
+            {/* Received Files */}
             {receivedFiles.length > 0 && (
               <div>
-                <h3 className="text-lg font-semibold mb-3">Alınan Dosyalar:</h3>
+                <h3 className="text-lg font-semibold mb-3">Received Files:</h3>
                 <ul className="space-y-2">
                   {receivedFiles.map((file, index) => (
                     <li key={index} className="flex justify-between items-center p-3 bg-white/10 rounded">
@@ -210,7 +261,7 @@ export default function Receive() {
                         onClick={() => downloadFile(file)}
                         className="bg-green-500 px-4 py-2 rounded hover:bg-green-600 transition"
                       >
-                        İndir
+                        Download
                       </button>
                     </li>
                   ))}
@@ -218,7 +269,7 @@ export default function Receive() {
               </div>
             )}
 
-            {/* Aktif Transfer */}
+            {/* Active Transfer */}
             {isReceiving && (
               <div className="text-center text-gray-300">
                 <p>Dosya alınıyor: {currentFile}</p>
@@ -227,6 +278,14 @@ export default function Receive() {
           </div>
         </div>
       </div>
+
+      <PermissionManager
+        isOpen={permissionModalVisible}
+        onClose={() => setPermissionModalVisible(false)}
+        contractAddress={contractAddress}
+        address={address}
+        wallet={walletAccount}
+      />
     </div>
   );
 }

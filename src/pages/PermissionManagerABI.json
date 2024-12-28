@@ -1,0 +1,149 @@
+{
+    "abi": [
+      {
+        "type": "impl",
+        "name": "External",
+        "interface_name": "new2::IPermissionManager"
+      },
+      {
+        "type": "enum",
+        "name": "core::bool",
+        "variants": [
+          {
+            "name": "False",
+            "type": "()"
+          },
+          {
+            "name": "True",
+            "type": "()"
+          }
+        ]
+      },
+      {
+        "type": "interface",
+        "name": "new2::IPermissionManager",
+        "items": [
+          {
+            "type": "function",
+            "name": "grant_permission",
+            "inputs": [
+              {
+                "name": "grantor",
+                "type": "core::starknet::contract_address::ContractAddress"
+              },
+              {
+                "name": "grantee",
+                "type": "core::starknet::contract_address::ContractAddress"
+              }
+            ],
+            "outputs": [],
+            "state_mutability": "external"
+          },
+          {
+            "type": "function",
+            "name": "has_permission",
+            "inputs": [
+              {
+                "name": "grantor",
+                "type": "core::starknet::contract_address::ContractAddress"
+              },
+              {
+                "name": "grantee",
+                "type": "core::starknet::contract_address::ContractAddress"
+              }
+            ],
+            "outputs": [
+              {
+                "type": "core::bool"
+              }
+            ],
+            "state_mutability": "view"
+          },
+          {
+            "type": "function",
+            "name": "delete_permission",
+            "inputs": [
+              {
+                "name": "grantor",
+                "type": "core::starknet::contract_address::ContractAddress"
+              },
+              {
+                "name": "grantee",
+                "type": "core::starknet::contract_address::ContractAddress"
+              }
+            ],
+            "outputs": [],
+            "state_mutability": "external"
+          },
+          {
+            "type": "function",
+            "name": "get_all_grantees",
+            "inputs": [
+              {
+                "name": "grantor",
+                "type": "core::starknet::contract_address::ContractAddress"
+              }
+            ],
+            "outputs": [
+              {
+                "type": "core::array::Array::<core::starknet::contract_address::ContractAddress>"
+              }
+            ],
+            "state_mutability": "view"
+          }
+        ]
+      },
+      {
+        "type": "event",
+        "name": "new2::PermissionManager::PermissionGranted",
+        "kind": "struct",
+        "members": [
+          {
+            "name": "grantor",
+            "type": "core::starknet::contract_address::ContractAddress",
+            "kind": "data"
+          },
+          {
+            "name": "grantee",
+            "type": "core::starknet::contract_address::ContractAddress",
+            "kind": "data"
+          }
+        ]
+      },
+      {
+        "type": "event",
+        "name": "new2::PermissionManager::PermissionDeleted",
+        "kind": "struct",
+        "members": [
+          {
+            "name": "grantor",
+            "type": "core::starknet::contract_address::ContractAddress",
+            "kind": "data"
+          },
+          {
+            "name": "grantee",
+            "type": "core::starknet::contract_address::ContractAddress",
+            "kind": "data"
+          }
+        ]
+      },
+      {
+        "type": "event",
+        "name": "new2::PermissionManager::Event",
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PermissionGranted",
+            "type": "new2::PermissionManager::PermissionGranted",
+            "kind": "nested"
+          },
+          {
+            "name": "PermissionDeleted",
+            "type": "new2::PermissionManager::PermissionDeleted",
+            "kind": "nested"
+          }
+        ]
+      }
+    ]
+  }
+  

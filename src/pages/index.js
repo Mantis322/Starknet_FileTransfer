@@ -1,13 +1,23 @@
 "use client";
 import styles from './styles.module.css';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAccount, useConnect, useDisconnect } from "@starknet-react/core";
 import { useStarknetkitConnectModal } from "starknetkit";
 import Link from 'next/link';
+import { WalletAccount, Contract } from 'starknet'
+const permissionManagerABI = require('./PermissionManagerABI.json');
+
+
+
 
 function Home() {
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const { address, isConnected } = useAccount();
+  const [walletAccount, setWalletAccount] = useState(null);
+
+  const contractAddress = '0x06462c81a901843c8f6ac3245e390abb3edf2f5b49be0446b13cd6ebb0a25fdb'
+  
 
   const connectWallet = async () => {
     const { starknetkitConnectModal } = useStarknetkitConnectModal({
@@ -16,7 +26,44 @@ function Home() {
 
     const { connector } = await starknetkitConnectModal()
     await connect({ connector })
+
+    const account = new WalletAccount(
+      { nodeUrl: 'https://starknet-sepolia.public.blastapi.io/rpc/v0_7' },
+      connector
+    );
+    setWalletAccount(account)
+    const bl = await account.getBlockNumber();
+    console.log(bl)
   }
+
+  const handleTransaction = async () => {
+  
+    const calls = [
+      {
+        contractAddress: contractAddress,
+        entrypoint: "grant_permission",
+        calldata: [address]
+      }
+    ];
+
+    const result = await walletAccount.execute(calls);
+  
+
+    console.log(result)
+  };
+
+  const oku2 = async () => {
+    const lendContract = new Contract(permissionManagerABI.abi, contractAddress, walletAccount);
+
+    const result = await lendContract.get_all_grantees("0x0499c2751d3691af78A4e85AFdbad1eb213FBD0B28F924ED60101C5c996c361E");
+
+
+    const hasPermission = result[0] === 1n;
+
+    
+    console.log(result)
+  };
+
 
   return (
     <>
@@ -28,23 +75,7 @@ function Home() {
               alt="starknetkit logo"
             />
             <span>P2P File Transfer With Starknet</span>
-          </div>
-          <div className={styles.walletActions}>
-            {isConnected ? (
-              <>
-                <button className={styles.connectbtn}>
-                  {address.slice(0, 5)}...{address.slice(60, 66)}
-                </button>
-                <button onClick={disconnect} className={`${styles.connectbtn} ${styles.disconnectBtn}`}>
-                  Disconnect
-                </button>
-              </>
-            ) : (
-              <button onClick={connectWallet} className={styles.connectbtn}>
-                Connect
-              </button>
-            )}
-          </div>
+            </div>
         </div>
 
         <div className="flex h-[80vh] items-center justify-center px-4">
@@ -57,9 +88,9 @@ function Home() {
                   </svg>
                 </div>
               </div>
-              <h2 className="text-4xl font-bold mb-6">Dosya Gönder</h2>
+              <h2 className="text-4xl font-bold mb-6">Send File</h2>
               <p className="text-gray-400 text-lg">
-                Güvenli ve hızlı dosya paylaşımı için tıklayın
+              Click for secure and fast file sharing
               </p>
             </div>
           </Link>
@@ -75,9 +106,9 @@ function Home() {
                   </svg>
                 </div>
               </div>
-              <h2 className="text-4xl font-bold mb-6">Dosya Al</h2>
+              <h2 className="text-4xl font-bold mb-6">Receive File</h2>
               <p className="text-gray-400 text-lg">
-                Size gönderilen dosyaları almak için tıklayın
+                Click to receive files sent to you
               </p>
             </div>
           </Link>
