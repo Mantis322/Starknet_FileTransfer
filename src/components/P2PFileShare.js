@@ -19,30 +19,31 @@ export default function P2PFileShare() {
   const downloadBufferRef = useRef({});
 
   useEffect(() => {
-  
-  const socket = io("https://starknet-file-transfer.vercel.app/api/socketio", {
-    path: '/api/socketio' 
-  });
+    fetch('/api/socket').finally(() => {
+      const socket = io({
+        path: '/api/socketio'
+      });
 
-  socket.on('connect', () => {
-    console.log('Connected with ID:', socket.id);
-    setSocketId(socket.id);
-  });
+      socket.on('connect', () => {
+        console.log('Connected with ID:', socket.id);
+        setSocketId(socket.id);
+      });
 
-  socketRef.current = socket;
+      socketRef.current = socket;
 
-  const rtcConnectionHandler = {
-    onDataChannel: handleDataChannel,
-    onRTCPeerConnection: handleRTCPeerConnection
-  };
+      const rtcConnectionHandler = {
+        onDataChannel: handleDataChannel,
+        onRTCPeerConnection: handleRTCPeerConnection
+      };
 
-  rtcConnectionManagerRef.current = createRTCConnectionManager(
-    socket,
-    rtcConnectionHandler
-  );
+      rtcConnectionManagerRef.current = createRTCConnectionManager(
+        socket,
+        rtcConnectionHandler
+      );
+    });
 
-  return () => socketRef.current?.disconnect();
-}, []);
+    return () => socketRef.current?.disconnect();
+  }, []);
 
   const handleDataChannel = (socketId, newDataChannel) => {
     setConnectedSocketId(socketId);
@@ -173,9 +174,9 @@ export default function P2PFileShare() {
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
       <div className="space-y-4">
         <div>
-          <div>Sizin ID: <span className="font-mono">{socketId}</span></div>
+          <div>Your ID: <span className="font-mono">{socketId}</span></div>
           {connectedSocketId && (
-            <div>Bağlanılan ID: <span className="font-mono">{connectedSocketId}</span></div>
+            <div>Connected ID: <span className="font-mono">{connectedSocketId}</span></div>
           )}
         </div>
 
@@ -184,7 +185,7 @@ export default function P2PFileShare() {
             type="text"
             value={targetId}
             onChange={(e) => setTargetId(e.target.value)}
-            placeholder="Hedef ID"
+            placeholder="Target ID"
             className="flex-1 border p-2 rounded"
           />
           <button
@@ -192,7 +193,7 @@ export default function P2PFileShare() {
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             disabled={!!connectedSocketId}
           >
-            Bağlan
+            Connect
           </button>
         </div>
 
@@ -205,7 +206,7 @@ export default function P2PFileShare() {
             />
 
             <div>
-              <h3 className="font-bold mb-2">Dosyalar:</h3>
+              <h3 className="font-bold mb-2">Files:</h3>
               <ul className="space-y-2">
                 {fileList.map((file, index) => (
                   <li key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
@@ -215,7 +216,7 @@ export default function P2PFileShare() {
                         onClick={() => startDownload(file.name)}
                         className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
                       >
-                        İndir
+                        Download
                       </button>
                     )}
                   </li>

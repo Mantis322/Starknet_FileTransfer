@@ -7,7 +7,9 @@ import { useStarknetkitConnectModal } from "starknetkit";
 import styles from './styles.module.css';
 import { WalletAccount, Contract } from 'starknet';
 import PermissionManager from './PermissionManager';
+import Link from 'next/link';
 const permissionManagerABI = require('./PermissionManagerABI.json');
+
 
 export default function Receive() {
   const [socketId, setSocketId] = useState('');
@@ -30,34 +32,34 @@ export default function Receive() {
   const walletRef = useRef(null);
 
   const contractAddress = '0x06462c81a901843c8f6ac3245e390abb3edf2f5b49be0446b13cd6ebb0a25fdb'
-  const lendContract = new Contract(permissionManagerABI.abi, contractAddress, address);
-
-useEffect(() => {
   
-  const socket = io("https://starknet-file-transfer.vercel.app/api/socketio", {
-    path: '/api/socketio' 
-  });
 
-  socket.on('connect', () => {
-    console.log('Connected with ID:', socket.id);
-    setSocketId(socket.id);
-  });
+  useEffect(() => {
+    fetch('/api/socket').finally(() => {
+      const socket = io({
+        path: '/api/socketio'
+      });
 
-  socketRef.current = socket;
+      socket.on('connect', () => {
+        console.log('Socket connected:', socket.id);
+        setSocketId(socket.id);
+      });
 
-  const rtcConnectionHandler = {
-    onDataChannel: handleDataChannel,
-    onRTCPeerConnection: handleRTCPeerConnection
-  };
+      socketRef.current = socket;
 
-  rtcConnectionManagerRef.current = createRTCConnectionManager(
-    socket,
-    rtcConnectionHandler
-  );
+      const rtcConnectionHandler = {
+        onDataChannel: handleDataChannel,
+        onRTCPeerConnection: handleRTCPeerConnection
+      };
 
-  return () => socketRef.current?.disconnect();
-}, []);
+      rtcConnectionManagerRef.current = createRTCConnectionManager(
+        socket,
+        rtcConnectionHandler
+      );
+    });
 
+    return () => socketRef.current?.disconnect();
+  }, []);
 
   useEffect(() => {
     if (socketId && (secretText || (isConnected && address))) {
@@ -90,7 +92,7 @@ useEffect(() => {
         await connect({ connector });
       }
     } catch (error) {
-      console.error("Cüzdan bağlantı hatası:", error);
+      console.error("Wallet connection error:", error);
     }
   };
 
@@ -173,11 +175,13 @@ useEffect(() => {
 
       <div className={styles.description}>
         <div className={styles.logoContainer}>
+          <Link href="/" className="flex items-center space-x-2 cursor-pointer">
           <img
             src="https://starknetkit-website-f0ejy1m72-argentlabs.vercel.app/starknetKit-logo-white.svg"
             alt="starknetkit logo"
           />
           <span>P2P File Transfer With Starknet</span>
+          </Link>
         </div>
         <div className={styles.walletActions}>
           {isConnected ? (

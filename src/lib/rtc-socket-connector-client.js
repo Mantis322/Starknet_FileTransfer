@@ -2,14 +2,14 @@ export const createRTCConnectionManager = (socket, handler) => {
     const peerConnections = new Map();
     let localPeerConnection = null;
   
-    // Peer Connection Konfigürasyonu
+    // Peer Connection Configuration
     const configuration = {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' }
       ]
     };
   
-    // Socket Dinleyicileri
+    // Socket Listeners
     socket.on('sdp', handleSDP);
     socket.on('ice-candidate', handleICECandidate);
   
