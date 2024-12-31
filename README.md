@@ -6,6 +6,7 @@ A revolutionary decentralized file sharing application built on Starknet that co
 
 Traditional file sharing solutions face numerous challenges in today's digital landscape. Here's how our solution compares:
 
+
 | Feature | Traditional File Sharing | Centralized Blockchain Solutions | P2P Starknet File Transfer |
 |---------|-------------------------|----------------------------------|--------------------------|
 | Server Costs | High maintenance costs | Medium-high gas fees | Minimal (only for permissions) |
@@ -16,6 +17,9 @@ Traditional file sharing solutions face numerous challenges in today's digital l
 | Scalability | Server-limited | Blockchain-limited | P2P network scalability |
 | Single Point of Failure | Yes (central server) | No | No |
 | Cost for Users | Subscription/Storage fees | High gas fees | Minimal gas fees |
+
+## Contract Address
+[0x06462c81a901843c8f6ac3245e390abb3edf2f5b49be0446b13cd6ebb0a25fdb](https://sepolia.starkscan.co/contract/0x06462c81a901843c8f6ac3245e390abb3edf2f5b49be0446b13cd6ebb0a25fdb)
 
 ## 🌟 Key Innovations
 
