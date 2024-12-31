@@ -1,40 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Secure P2P File Transfer on Starknet 🔐
 
-## Getting Started
+A revolutionary decentralized file sharing application built on Starknet that combines the power of P2P connections with blockchain security.
 
-First, run the development server:
+## Why This Matters? 🤔
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Traditional file sharing solutions face numerous challenges in today's digital landscape. Here's how our solution compares:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Feature | Traditional File Sharing | Centralized Blockchain Solutions | P2P Starknet File Transfer |
+|---------|-------------------------|----------------------------------|--------------------------|
+| Server Costs | High maintenance costs | Medium-high gas fees | Minimal (only for permissions) |
+| Data Storage | Centralized servers | On-chain (expensive) | P2P (no storage costs) |
+| Security | Vulnerable to server attacks | Smart contract dependent | Dual-layer (P2P + Blockchain) |
+| Privacy | Limited by server policies | Public blockchain data | Private P2P connections |
+| Access Control | Database-dependent | Smart contract-based | Smart contract + Security code |
+| Scalability | Server-limited | Blockchain-limited | P2P network scalability |
+| Single Point of Failure | Yes (central server) | No | No |
+| Cost for Users | Subscription/Storage fees | High gas fees | Minimal gas fees |
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## 🌟 Key Innovations
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+1. **Hybrid Security Architecture**
+   - Smart contract-based permissions
+   - P2P file transfer infrastructure
+   - Two-factor authentication with wallet + security code
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+2. **Cost-Efficient Design**
+   - No central storage costs
+   - Minimal gas fees (only for permission management)
+   - Scalable P2P infrastructure
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Enhanced Privacy**
+   - Direct peer connections
+   - No data storage on blockchain
+   - Permissioned access control
 
-## Learn More
+## 🔧 Technical Architecture
 
-To learn more about Next.js, take a look at the following resources:
+1. **Receiver Flow:**
+   - Connect Starknet wallet
+   - Grant permissions via smart contract
+   - Generate unique security code
+   - Share address + code with sender
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+2. **Sender Flow:**
+   - Connect Starknet wallet
+   - Verify permissions on-chain
+   - Input receiver's security code
+   - Initiate P2P file transfer
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 💡 Why Starknet?
 
-## Deploy on Vercel
+- **Security**: Leverages Starknet's robust security model
+- **Scalability**: Benefits from Starknet's Layer 2 scaling
+- **Cost-efficiency**: Minimal gas fees for permission management
+- **Future-proof**: Built on evolving ZK-rollup technology
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Future Potential
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+- Multi-file transfer optimization
+- Advanced permission management
+- Cross-chain compatibility
+
+
+## 🔍 Security Features
+
+- Decentralized permission storage
+- No central point of failure
+- Two-factor authentication
+- Secure P2P connections
+- Smart contract audited security
+
+## 📈 Market Advantage
+
+Our solution addresses the primary concerns in the file sharing industry:
+- Security
+- Privacy
+- Cost
+- Scalability
+- Ease of use
+
+
+## 🤝 Contributing
+
+We welcome contributions!
+
+
+---
+
+*This project represents the future of secure file sharing, combining the best of blockchain security with P2P efficiency.*
