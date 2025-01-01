@@ -51,6 +51,18 @@ Traditional file sharing solutions face numerous challenges in today's digital l
    - Verify permissions on-chain
    - Input receiver's security code
    - Initiate P2P file transfer
+  
+## 🎯 Technical Innovation
+
+1. **Cairo-Native Development**: 
+   - Built entirely using Cairo, Starknet's secure programming language
+   - Leverages Cairo's built-in security features and mathematical proofs
+   - Optimized for Starknet's SHARP prover
+
+2. **Starknet Integration**:
+   - Direct integration with Starknet's Layer 2 scaling solution
+   - Efficient permission management through Cairo smart contracts
+   - Minimal gas costs due to Starknet's architecture
 
 ## 💡 Why Starknet?
 
