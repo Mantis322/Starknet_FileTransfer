@@ -91,8 +91,6 @@ We welcome contributions!
 
 ---
 
-*Currently this project is running on localhost.
-
----
+*Currently this project is running on localhost.*
 
 *This project represents the future of secure file sharing, combining the best of blockchain security with P2P efficiency.*
