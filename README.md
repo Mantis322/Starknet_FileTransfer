@@ -95,6 +95,37 @@ Our solution addresses the primary concerns in the file sharing industry:
 - Scalability
 - Ease of use
 
+# Frontend Installation Guide 🖥️
+
+## Prerequisites 📋
+
+1. **Web Browser**
+  - Chrome, Firefox, or Brave with Starknet wallet extension
+  - Argent X or Braavos wallet installed
+
+2. **Development Environment**
+  - Node.js v16 or higher
+  - npm or yarn package manager
+
+### Quick Start ⚡
+
+
+1. Clone the frontend repository
+```git clone https://github.com/Mantis322/starknet-p2p-transfer-frontend```
+
+2. Navigate to project directory
+```cd starknet-p2p-transfer-frontend```
+
+3. Install dependencies
+```npm install```
+ or
+```yarn install```
+
+4. Start development server
+```npm run dev```
+or
+```yarn dev```
+
 
 ## 🤝 Contributing
 
